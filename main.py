@@ -1,16 +1,14 @@
 import io
 import urllib.request
 
-from fastapi import HTTPException
-
 import numpy as np
 from PIL import Image, ImageOps
 from fastapi import FastAPI, Depends, File
+from fastapi import HTTPException
 from keras.models import load_model
 from sqlalchemy.orm import Session
 
 import database
-from auth import create_token, get_id
 from user import User
 
 app = FastAPI()
@@ -55,9 +53,4 @@ async def login(db: Session = Depends(database.get_db), sign: bytes = File(...))
     if max <= 0.3:
         print(max)
         raise HTTPException(status_code=404, detail="Not Found Sign")
-    return {"token": create_token(id)}
-
-
-@app.get("/token/{token}")
-async def get_token_id(token: str):
-    return {"id": get_id(token)}
+    return {"id": id}
